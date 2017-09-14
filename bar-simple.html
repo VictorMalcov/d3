@@ -1,5 +1,4 @@
 <!doctype html>
-
 <html lang="en">
 
 <head>
@@ -14,16 +13,24 @@
         body {
             padding: 15px;
         }
+       
+        .chart {
+            width: 50%;
+            padding: 10px;
+            background-color: #D8D8D8;
+            margin-bottom: 50px;
+
+        }
 
         .chart div {
-            border:0px solid black;
+            border: 0px solid black;
             margin-bottom: 2px;
             text-align: right;
             padding: 3px 5px 3px 0;
             background-color: #3F42F5;
             color: #ffffff;
             font-size: 12px;
-            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
     </style>
 </head>
@@ -31,20 +38,45 @@
 <body>
     <h1>Bar chart</h1>
 
-    <div class='chart'></div>
+    <div id="chart1" class="chart"></div>
+    <div id="chart2" class="chart"></div>
 
 
     <script>
-        var data = [30, 86, 168, 281, 303, 365];
-        d3.select('.chart')
-            .selectAll('div')
-            .data(data)
-            .enter()
-            .append('div')
-            .style('width', function(d) { return d + 'px' })
-            .text(function(d) { return d });
+        var data = [4, 8, 15, 16, 23, 42];
+        //var data = [30, 86, 168, 281, 303, 365];        
+
+        // CHART 1
+        // here we define function that will convert data value into another value (scaled)
+        var chart1DataScale = d3.scaleLinear()
+            .domain([0, d3.max(data)])
+            .range([0, 420]); // 420 is desired width in px of the chart
+
+        var chart1 = d3.select('#chart1');
+        var bar = chart1.selectAll('div');
+        // joining data with html elements
+        var barUpdate = bar.data(data);
+        // creating elements for data join
+        var barEnter = barUpdate.enter().append('div');
+        barEnter.text(function (d) { return d });
+        barEnter.style('width', function (d) { return chart1DataScale(d) + 'px' })
+        //barEnter.style('width', function (d) { return (d * 10) + 'px' })
 
 
+        // CHART 2
+        // here we define function that will convert data value into another value (scaled)
+        var chart2DataScale = d3.scaleLinear()
+            .domain([0, d3.max(data)])
+            .range([0, 100]); // 100 is desired width in % of the chart
+
+        var chart2 = d3.select('#chart2');
+        var bar = chart2.selectAll('div');
+        // joining data with html elements
+        var barUpdate = bar.data(data);
+        // creating elements for data join
+        var barEnter = barUpdate.enter().append('div');
+        barEnter.text(function (d) { return d });
+        barEnter.style('width', function (d) { return chart2DataScale(d) + '%' })
     </script>
 </body>
 
