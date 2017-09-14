@@ -1,0 +1,51 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Simple bar chart</title>
+    <!-- <link rel="stylesheet" href="css/styles.css?v=1.0"> -->
+    <!--[if lt IE 9]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+  <![endif]-->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <style>
+        body {
+            padding: 15px;
+        }
+
+        .chart div {
+            border:0px solid black;
+            margin-bottom: 2px;
+            text-align: right;
+            padding: 3px 5px 3px 0;
+            background-color: #3F42F5;
+            color: #ffffff;
+            font-size: 12px;
+            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Bar chart</h1>
+
+    <div class='chart'></div>
+
+
+    <script>
+        var data = [30, 86, 168, 281, 303, 365];
+        d3.select('.chart')
+            .selectAll('div')
+            .data(data)
+            .enter()
+            .append('div')
+            .style('width', function(d) { return d + 'px' })
+            .text(function(d) { return d });
+
+
+    </script>
+</body>
+
+</html>

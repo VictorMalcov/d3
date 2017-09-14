@@ -1,0 +1,96 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>D3.js demo</title>
+    <!-- <link rel="stylesheet" href="css/styles.css?v=1.0"> -->
+    <!--[if lt IE 9]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+  <![endif]-->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <style>
+        body {
+            padding: 15px;
+        }
+
+        p {
+            padding: 7px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>D3.js demo</h1>
+
+    <div id='div-container'>
+        <div>div exists from the beginning</div>
+        <div>div exists from the beginning</div>
+        <div>div exists from the beginning</div>
+        <div>div exists from the beginning</div>
+    </div>
+    <hr />
+    <p></p>
+    <p></p>
+
+
+    <script>
+        var divs = d3.select('#div-container')
+            .selectAll('div')
+            .data([0, 0, 0])
+            .text(function (d) { return 'Number ' + d });
+
+        // enter
+        divs.enter().append('div').text(function (d) { return 'Number ' + d });
+        // exit
+        divs.exit().remove();
+
+
+        
+        // Working version: extra data will form 'enter' selection
+        // d3.select('#div-container')
+        //     .selectAll('div')
+        //     .data([0, 0, 0])
+        //     .enter()
+        //     .append('div')
+        //     .text(function (d) { return 'Number ' + d });        
+
+        var counter = 1;
+        setInterval(function () {
+
+            var dataArr = [];
+            if(counter % 2 === 0)
+                dataArr = [counter + 10, counter + 20, counter + 30];
+            else
+                dataArr = [counter + 10, counter + 20];
+
+            d3.select('#div-container')
+                .selectAll('div')
+                .data(dataArr)                           
+                .text(function (d) { return 'Number ' + d })
+                .style("color", function (d, i) { return '#' + (Math.random()*0xFFFFFF<<0).toString(16); });                
+            counter++;
+        }, 400);
+
+
+
+        var p = d3.select('body')
+            .selectAll('p')
+            .data([10, 20])
+            .text(function (d) { return 'I am number ' + d + '!' });
+
+        d3.selectAll('p')
+            .transition()
+            .duration(2000)
+            .style('background-color', '#cc6600');
+
+        // d3.selectAll("p").style("color", function (d, i) {
+        //     console.log('\n');
+        //     console.log(d);
+        //     console.log(i);
+        // });
+    </script>
+</body>
+
+</html>
