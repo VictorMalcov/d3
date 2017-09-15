@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Simple bar chart</title>
+    <!-- <link rel="stylesheet" href="css/styles.css?v=1.0"> -->
+    <!--[if lt IE 9]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+  <![endif]-->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <style>
+        body {
+            padding: 15px;
+        }
+
+        .chart rect {
+            fill: steelblue;
+        }
+
+        .chart text {
+            fill: white;
+            font: 10px sans-serif;
+            text-anchor: middle;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Bar chart</h1>
+
+    <svg class="chart"></svg>
+
+    <script>
+        var width = 960;
+        var height = 500;        
+        var chart = d3.select('.chart').attr('width', width).attr('height', height);
+
+
+        d3.csv("letters.csv", parseCsvRow, function (error, data) {
+
+            var yScale = d3.scaleLinear()
+                .domain([0, d3.max(data, function (d) { return d.value; })])
+                .range([height, 0]);
+
+            var xScale = d3.scaleOrdinal()
+                .domain(data.map(function(d) { return d.name }))
+                .scaleBand().rangeRound([0, width]).padding(0.1);
+
+            var barWidth = width / data.length; // calculate width of the bar depending on number of data points
+
+            var bar = chart.selectAll('g')
+                .data(data)
+                .enter().append('g')
+                .attr('transform', function (d, i) {
+                    return 'translate(' + i * barWidth  + ', 0)';
+                });
+
+            bar.append('rect')
+                .attr('y', function (d) {  return yScale(d.value) })
+                .attr('height', function (d) {  return height - yScale(d.value) })
+                .attr('width', barWidth - 1);
+
+            bar.append('text')
+                .attr('x', barWidth / 2)
+                .attr('y', function (d) { return yScale(d.value) + 4 })
+                .attr('dy', '.75em')
+                .text(function (d) { return d.name });
+        });
+
+        function parseCsvRow(row) {
+            row.value = +row.value; // coerce to number
+            return row;
+        }
+    </script>
+
+</body>
+
+</html>
