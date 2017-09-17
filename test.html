@@ -14,9 +14,6 @@
             padding: 15px;
         }
 
-        .chart {
-            border: 1px solid #E0E0E0;
-        }
         .chart rect {
             fill: steelblue;
         }
@@ -49,23 +46,58 @@
             var xScale = d3.scaleBand()
                 .domain(data.map(function(d) { return d.name }))                
                 .range([0, width])
-                .paddingOuter(0)
-                .paddingInner(0.05)
                 .round(0.1);
             console.log(xScale('A'));
             console.log(xScale('B'));
             console.log(`width of each band is ${xScale.bandwidth()}`);
             console.log(`step is ${xScale.step()}`);
 
-            // we don't need to calculate bar width since we are using d3.scaleBand
-            //var barWidth = width / data.length; // calculate width of the bar depending on number of data points            
+            
+            // console.log('\nxTest:');
+            // var xTest = d3.scaleOrdinal()
+            //     .domain(['A', 'B', 'C', 'D'])
+            //     .range([0, 1, 2, 3]);
+            // console.log(xTest('A'));
+            // console.log(xTest('B'));
+            // console.log(xTest('C'));
+            // console.log(xTest('D'));
+
+            console.log('\nzTest:');
+            var zTest = d3.scaleBand()
+                .domain(['A', 'B', 'C', 'D', 'E', 'F', 'G']) //.domain(["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"])
+                .range([0, 960])
+                .round(0.1);
+                // .paddingOuter(0.1)
+                // .paddingInner(0.2);
+            console.log(zTest('A'));
+            console.log(zTest('B'));
+            console.log(zTest('C'));
+            console.log(zTest('D'));
+            console.log(`width of each band is ${zTest.bandwidth()}`);
+            console.log(`step is ${zTest.step()}`);
+
+
+            // console.log('-----------------');
+            // // Given a value from the domain, return corresponding value from the range
+            // var test1 = d3.scaleLinear()
+            //     .domain([0, 100])
+            //     .range([0, 10]);
+            // console.log(test1(0));
+            // console.log(test1(10));
+            // console.log(test1(50));
+            // console.log(test1(100));
+            
+
+            
+            var barWidth = width / data.length; // calculate width of the bar depending on number of data points
+            console.log(`Bar width is ${barWidth} px`);
 
             var bar = chart.selectAll('g')
                 .data(data)
                 .enter().append('g')
                 .attr('transform', function (d, i) {
                     //console.log(`g pos: [${(i * barWidth)},0]`);
-                    return 'translate(' + xScale(d.name) + ', 0)';
+                    return 'translate(' + i * barWidth + ', 0)';
                 });
 
             bar.append('rect')
@@ -77,7 +109,7 @@
                     //console.log(`data: ${d.value}, rect height: ${(height - yScale(d.value))}`);
                     return height - yScale(d.value);
                 })
-                .attr('width', xScale.bandwidth());
+                .attr('width', barWidth - 1);
 
             // bar.append('text')
             //     .attr('x', barWidth / 2)
