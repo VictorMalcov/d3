@@ -17,14 +17,23 @@
         .chart {
             border: 1px solid #E0E0E0;
         }
+
+        .bar:hover {
+            fill: brown;
+        }
+
         .chart rect {
             fill: steelblue;
         }
-
-        .chart text {
-            fill: white;
+        /* .chart text {
+            fill: #230A8F;
             font: 10px sans-serif;
             text-anchor: middle;
+        } */
+
+        .label {
+            font-size: 14px;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -35,9 +44,14 @@
     <svg class="chart"></svg>
 
     <script>
-        var width = 960;
-        var height = 500;
-        var chart = d3.select('.chart').attr('width', width).attr('height', height);
+        var margin = { top: 20, right: 30, bottom: 50, left: 60 };
+        var width = 960 - margin.left - margin.right;
+        var height = 500 - margin.top - margin.bottom;
+        var chart = d3.select('.chart')
+            .attr('width', width + margin.left + margin.right)
+            .attr('height', height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
         d3.csv("letters.csv", parseCsvRow, function (error, data) {
@@ -47,7 +61,7 @@
                 .range([height, 0]);
 
             var xScale = d3.scaleBand()
-                .domain(data.map(function(d) { return d.name }))                
+                .domain(data.map(function (d) { return d.name }))
                 .range([0, width])
                 .paddingOuter(0)
                 .paddingInner(0.05)
@@ -69,6 +83,7 @@
                 });
 
             bar.append('rect')
+                .attr('class', 'bar')
                 .attr('y', function (d) {
                     //console.log(`data: ${d.value}, rect y: ${yScale(d.value)}`);
                     return yScale(d.value);
@@ -79,11 +94,31 @@
                 })
                 .attr('width', xScale.bandwidth());
 
-            // bar.append('text')
-            //     .attr('x', barWidth / 2)
-            //     .attr('y', function (d) { return yScale(d.value) + 4 })
-            //     .attr('dy', '.75em')
-            //     .text(function (d) { return d.name });
+            // Add x-axis
+            chart.append("g")
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3.axisBottom(xScale));
+            // Add text label for x-axis
+            chart.append("text")
+                .attr("transform", "translate(" + (width / 2) + " ," + (height + margin.top + 20) + ")")
+                .attr('class', 'label')
+                .style("text-anchor", "middle")
+                .text("Letters");
+
+            // Add y-axis
+            chart.append("g")
+                .attr("transform", "translate(0,0)")
+                .call(d3.axisLeft(yScale));
+             // Add text label for y-axis
+            //  chart.append("text")
+            //     .attr("transform", "translate(0,0)")
+            //     .attr("transform", "translate(0, 0)")
+            //     .attr("transform", "rotate(-90)")
+            //     .attr('class', 'label')
+            //     .style("text-anchor", "middle")
+            //     .text("Frequency");
+
+
         });
 
         function parseCsvRow(row) {
