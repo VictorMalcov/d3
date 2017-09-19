@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>d3</title>
+    <script src="libs/d3.js"></script>
+    <style>
+
+    </style>
+</head>
+
+<body>
+
+    <script>
+        var dataset = [5, 10, 15, 20, 25];
+        d3.select("body")
+            .selectAll('p')
+            .data(dataset)
+            .enter()
+            .append('p')        
+            .text("New paragraph!");
+
+
+
+
+        // d3.json("data/food.json", function (err, data) {
+        //     if(err) {
+        //         console.log('Error while loading data:');
+        //         console.log(err);
+        //     }
+        //     console.log(data);
+        // });
+
+    </script>
+
+</body>
+
+</html>
