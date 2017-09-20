@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>d3</title>
+    <title>d3 - circle</title>
     <script src="libs/d3.js"></script>
     <style>
 
@@ -11,27 +11,16 @@
 </head>
 
 <body>
-
     <script>
         var dataset = [5, 10, 15, 20, 25];
+        // after .data(), everything will be executed 5 times, once for each value
         d3.select("body")
             .selectAll('p')
             .data(dataset)
             .enter()
-            .append('p')        
-            .text("New paragraph!");
-
-
-
-
-        // d3.json("data/food.json", function (err, data) {
-        //     if(err) {
-        //         console.log('Error while loading data:');
-        //         console.log(err);
-        //     }
-        //     console.log(data);
-        // });
-
+            .append('p')
+            .text(function (d) { return 'Number ' + d })
+            .style('color', 'blue');
     </script>
 
 </body>

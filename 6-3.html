@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>d3 - bar</title>
+    <script src="libs/d3.js"></script>
+    <style>
+        svg {
+            border: 0px solid #dddddd;
+        }
+
+        .bar {
+            fill: #6750B9
+        }
+    </style>
+</head>
+
+<body>
+    <svg></svg>
+    <script>
+        var width = 500;
+        var height = 100;
+        var barPadding = 1;
+        var scaleFactor = 4;
+        var dataset = [5, 10, 13, 19, 21, 25, 22, 18, 15, 13,
+            11, 12, 15, 20, 18, 17, 16, 18, 23, 25];
+
+
+        var svg = d3.select('svg').attr('width', width).attr('height', height);
+        svg.selectAll('rects')
+            .data(dataset)
+            .enter()
+            .append('rect')
+            .attr('x', function (d, i) { return i * (width / dataset.length) })
+            .attr('y', function (d) { return height - (d * scaleFactor) })
+            .attr('width', (width / dataset.length) - barPadding)
+            .attr('height', function (d) { return d * scaleFactor })
+            .attr('fill', function (d) {
+                return 'rgb(0, 0, ' + Math.round(d * 10) + ')';
+            });
+
+        svg.selectAll('text')
+            .data(dataset)
+            .enter()
+            .append('text')
+            .text(function (d) { return d })
+            .attr('x', function (d, i) {
+                return i * (width / dataset.length) + ((width / dataset.length - barPadding) / 2); // approximate middle of bar
+            })
+            .attr('y', function (d) {
+                return height - (d * scaleFactor) + 12;
+            })
+            .attr("font-family", "Verdana")
+            .attr("font-size", "9px")
+            .attr("fill", "white")
+            .attr('text-anchor', 'middle')
+    </script>
+
+</body>
+
+</html>
