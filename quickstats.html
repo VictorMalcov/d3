@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>d3 - scatterplot with time scales</title>
+    <script src="libs/d3.js"></script>
+    <style>
+        svg {
+            border: 0px solid #dddddd;
+        }
+
+        .bar {
+            fill: #6750B9
+        }
+    </style>
+</head>
+
+<body>
+    <svg></svg>
+
+    <script>
+        //Width and height
+        var width = 400;
+        var height = 250;
+        var svg = d3.select('svg').attr("width", width).attr("height", height);
+
+        var data = {
+            title: 'Grade point average by Undergraduate degree program.',
+            source: 'U.S. Department of Education, National Center for Education Statistics, 2007-08 National Postsecondary Student Aid Study (NPSAS:08).&amp;lt;br /&amp;gt;NOTICE OF REVISION: In August 2013, NPSAS:08 weights were revised to match weighting procedures used in NPSAS:12.',
+            footnote: 'Computation by NCES QuickStats on 8/25/2017 9:33:15 PM',
+            rowTitles: [
+                { id: 1, value: 'Total' },
+                { id: 2, value: 'Certificate' },
+                { id: 3, value: 'Associate\'s degree' },
+                { id: 4, value: 'Bachelor\'s degree' },
+                { id: 5, value: 'Not in a degree program or others' }
+            ],
+            columns: [
+                {
+                    title: 'Lower than 2.50',
+                    elements: [
+                        { id: 1, estimate: 24.9 },
+                        { id: 2, estimate: 16.2 },
+                        { id: 3, estimate: 30.5 },
+                        { id: 4, estimate: 21.6 },
+                        { id: 5, estimate: 22.8 }
+                    ]
+                },
+                {
+                    title: '2.50 - 2.99',
+                    elements: [
+                        { id: 1, estimate: 19.9 },
+                        { id: 2, estimate: 11.9 },
+                        { id: 3, estimate: 19.1 },
+                        { id: 4, estimate: 22.9 },
+                        { id: 5, estimate: 12.8 }
+                    ]
+                },
+                {
+                    title: '3.00 - 3.49',
+                    elements: [
+                        { id: 1, estimate: 26.0 },
+                        { id: 2, estimate: 23.8 },
+                        { id: 3, estimate: 24.0 },
+                        { id: 4, estimate: 28.6 },
+                        { id: 5, estimate: 22.8 }
+                    ]
+                },
+                {
+                    title: '3.50 or higher',
+                    elements: [
+                        { id: 1, estimate: 29.2 },
+                        { id: 2, estimate: 48.1 },
+                        { id: 3, estimate: 26.4 },
+                        { id: 4, estimate: 26.9 },
+                        { id: 5, estimate: 41.6 }
+                    ]
+                }
+
+            ]
+        };
+
+
+        var xScale = d3.scaleBand()
+            .domain(d3.range(data.columns[0].elements.length)) //data.columns[0].elements.map(function (d) { return d.id })
+            .rangeRound([0, width])
+            .paddingInner(0.05);
+        
+        var yScale = d3.scaleLinear()
+            .domain([0, d3.max(data.columns[0].elements.map(function (d) { return d.estimate }))])
+            .range([0, height]);
+
+        svg.selectAll('rect')
+            .data(data.columns[0].elements)
+            .enter()
+            .append('rect')
+            .attr("x", function (d, i) { return xScale(i); })
+            .attr("y", function (d) { return height - yScale(d.estimate); })
+            .attr("width", xScale.bandwidth())
+            .attr("height", function (d) { return yScale(d.estimate); })
+            .attr("fill", '#6098f2');
+
+
+
+
+    </script>
+
+</body>
+
+</html>
