@@ -12,36 +12,53 @@
     <svg width="960" height="500"></svg>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script>
-        var svg = d3.select("svg"),
-            margin = { top: 20, right: 20, bottom: 30, left: 40 },
-            width = +svg.attr("width") - margin.left - margin.right,
-            height = +svg.attr("height") - margin.top - margin.bottom,
-            g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        var svg = d3.select("svg");
+        var margin = { 
+            top: 20, 
+            right: 20, 
+            bottom: 30, 
+            left: 40 
+        };
 
-        var x0 = d3.scaleBand()
-            .rangeRound([0, width])
-            .paddingInner(0.1);
+        var width = +svg.attr("width") - margin.left - margin.right;
+        var height = +svg.attr("height") - margin.top - margin.bottom;
+        var g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        var x1 = d3.scaleBand()
-            .padding(0.05);
 
-        var y = d3.scaleLinear()
-            .rangeRound([height, 0]);
+        var parseRow = function(data, index, columns) {
+            for (var i = 1, n = columns.length; i < n; ++i) {
+                data[columns[i]] = +data[columns[i]];
+            }
+            return data;
+        }
 
-        var z = d3.scaleOrdinal()
-            .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
-
-        d3.csv("../data/grouped.csv", function (d, i, columns) {
-            for (var i = 1, n = columns.length; i < n; ++i) d[columns[i]] = +d[columns[i]];
-            return d;
-        }, function (error, data) {
+        d3.csv("../data/grouped.csv", parseRow, function (error, data) {
             if (error) throw error;
-
+            console.log(data);
             var keys = data.columns.slice(1);
 
-            x0.domain(data.map(function (d) { return d.State; }));
-            x1.domain(keys).rangeRound([0, x0.bandwidth()]);
-            y.domain([0, d3.max(data, function (d) { return d3.max(keys, function (key) { return d[key]; }); })]).nice();
+            var x0 = d3.scaleBand()
+                .domain(data.map(function (d) { return d.State; }))
+                .rangeRound([0, width])
+                .paddingInner(0.1);
+                
+
+            var x1 = d3.scaleBand()
+                .domain(keys)
+                .rangeRound([0, x0.bandwidth()])
+                .padding(0.05);
+                
+
+            var y = d3.scaleLinear()
+                .domain([0, d3.max(data, function (d) { 
+                    return d3.max(keys, function (key) {
+                        return d[key]; 
+                    }); 
+                })])
+                .rangeRound([height, 0])                
+                .nice();
+
+            var z = d3.scaleOrdinal().range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
             g.append("g")
                 .selectAll("g")
@@ -95,6 +112,5 @@
                 .attr("dy", "0.32em")
                 .text(function (d) { return d; });
         });
-
     </script>
 </body>
