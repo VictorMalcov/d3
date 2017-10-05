@@ -155,7 +155,7 @@
             .data(function (column) { return column.elements; })
             .enter()            
             .append("text")            
-            .attr("transform", function(d) { return "rotate(90, " + (x1(d.id) + 10) + ", " + (y(d.estimate) - 4) + ")" })            
+            .attr("transform", function(d) { return "rotate(-90, " + (x1(d.id) + 10) + ", " + (y(d.estimate) - 4) + ")" })            
             .text(function (d) { return Math.round(d.estimate) + '%'; })            
             .attr("x", function (d) { return x1(d.id); })
             .attr("y", function (d) { return y(d.estimate); })
