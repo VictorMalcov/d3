@@ -18,7 +18,8 @@
 
 <body>
     <svg></svg>
-    <br /><br />
+    <br />
+    <br />
     <div>
         <a href="#">Click on this text to update the chart with new data values (once).</a>
     </div>
@@ -62,13 +63,7 @@
                 else
                     return height - yScale(d) + 14;
             })
-            .attr('fill', function (d) {
-                var barHeight = yScale(d);
-                if (barHeight < 30)
-                    return 'black';
-                else
-                    return 'white';
-            })
+            .attr('fill', function (d) { return yScale(d) < 30 ? 'black' : 'white'; })
             .attr("font-family", "sans-serif")
             .attr("font-size", "11px")
 
@@ -85,7 +80,6 @@
 
                 // updating scale after we generated new dataset
                 yScale.domain([0, d3.max(dataset)]);
-
 
                 svg.selectAll("rect")
                     .data(dataset)
@@ -108,13 +102,7 @@
                         else
                             return height - yScale(d) + 14;
                     })
-                    .attr('fill', function (d) {
-                        var barHeight = yScale(d);
-                        if (barHeight < 30)
-                            return 'black';
-                        else
-                            return 'white';
-                    })
+                    .attr('fill', function (d) { return yScale(d) < 30 ? 'black' : 'white'; })
                     .text(function (d) { return d; });
 
             });

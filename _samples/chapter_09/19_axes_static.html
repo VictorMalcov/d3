@@ -27,7 +27,8 @@
 				var newNumber1 = Math.floor(Math.random() * maxRange);	//New random integer
 				var newNumber2 = Math.floor(Math.random() * maxRange);	//New random integer
 				dataset.push([newNumber1, newNumber2]);					//Add new number to array
-			}
+			}            
+            console.log(dataset);
 
 			//Create scale functions
 			var xScale = d3.scaleLinear()

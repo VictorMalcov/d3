@@ -8,7 +8,7 @@
     <style>
         svg {
             border: 0px solid #dddddd;
-        }        
+        }
     </style>
 </head>
 
@@ -19,6 +19,8 @@
         var height = 300;
         var padding = 40;
         var dataset;
+
+
         // %Y - year is 4-digit, %y - year is 2-digit
         var parseTime = d3.timeParse('%m/%d/%y');
         //For converting Dates to strings
@@ -72,7 +74,7 @@
                 .append("line")
                 .attr("x1", function (d) { return xScale(d.Date) })
                 .attr("x2", function (d) { return xScale(d.Date) })
-                .attr("y1", height - padding) 
+                .attr("y1", height - padding)
                 .attr("y2", function (d) { return yScale(d.Amount) })
                 .attr("stroke", "#ddd")
                 .attr("stroke-width", 1);
@@ -96,7 +98,7 @@
                 .call(yAxis);
 
         });
-        
+
     </script>
 
 </body>

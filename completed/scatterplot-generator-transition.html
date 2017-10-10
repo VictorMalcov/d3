@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Scatterplot with random data</title>
+    <script src="../libs/d3.js"></script>
+    <style>
+        svg {
+            border: 0px solid #dddddd;
+        }
+    </style>
+</head>
+
+<body>
+    <svg></svg>
+    <br />
+    <a href="javascript:void(0)">Click on this text to update the chart with new data values.</a>
+
+    <script>
+        var width = 500;
+        var height = 300;
+        var padding = 30;
+        var dataset = [];
+        var numDataPoints = 50;	//Number of dummy data points to create
+        var maxRange = Math.random() * 1000; //Max range of new values
+        for (var i = 0; i < numDataPoints; i++) {
+            var newNumber1 = Math.floor(Math.random() * maxRange);
+            var newNumber2 = Math.floor(Math.random() * maxRange);
+            dataset.push([newNumber1, newNumber2]);
+        }
+
+        var xScale = d3.scaleLinear()
+            .domain([0, d3.max(dataset, function (d) { return d[0]; })])
+            .range([padding, width - padding * 2]);
+
+        var yScale = d3.scaleLinear()
+            .domain([0, d3.max(dataset, function (d) { return d[1]; })])
+            .range([height - padding, padding]);
+
+
+        var svg = d3.select('svg').attr('width', width).attr('height', height);
+
+
+        // define clipping path
+        svg.append('clipPath')
+            .attr('id', 'chart-area')
+            .append('rect')
+            .attr('x', padding)
+            .attr('y', padding)
+            .attr('width', width - padding * 3)
+            .attr('height', height - padding * 2);
+
+        // creating circles for data
+        svg.append('g')
+            .attr('id', 'circles')
+            .attr('clip-path', 'url(#chart-area)')
+            .selectAll("circle")
+            .data(dataset)
+            .enter()
+            .append("circle")
+            .attr("cx", function (d) { return xScale(d[0]) })
+            .attr("cy", function (d) { return yScale(d[1]) })
+            .attr("r", 2);
+
+        // x-axes
+        var xAxis = d3.axisBottom().scale(xScale).ticks(5);
+        // y-axes
+        var yAxis = d3.axisLeft().scale(yScale).ticks(5);
+
+
+        // appending X axes to svg
+        svg.append('g')
+            .attr('class', 'axis-x')
+            .attr('transform', 'translate(0, ' + (height - padding) + ')')
+            .call(xAxis);
+        // appending Y axes to svg
+        svg.append('g')
+            .attr('class', 'axis-y')
+            .attr('transform', 'translate(' + padding + ', 0)')
+            .call(yAxis);
+
+
+
+        //On click, update with new data			
+        d3.select("a")
+            .on("click", function () {
+
+                var numValues = dataset.length;
+                var maxRange = Math.random() * 1000; //Max range of new values
+                dataset = [];
+                for (var i = 0; i < numValues; i++) {
+                    var newNumber1 = Math.floor(Math.random() * maxRange);
+                    var newNumber2 = Math.floor(Math.random() * maxRange);
+                    dataset.push([newNumber1, newNumber2]);
+                }
+
+                //Update scale domains
+                xScale.domain([0, d3.max(dataset, function (d) { return d[0]; })]);
+                yScale.domain([0, d3.max(dataset, function (d) { return d[1]; })]);
+
+                //Update all circles
+                svg.selectAll("circle")
+                    .data(dataset)
+                    .transition() // transition #1
+                    .duration(1000)
+                    .on('start', function(d) {
+                        // before starting transiction #1, change color and radius of circle
+                        d3.select(this).attr('fill', '#2a9bf1').attr('r', 7);
+                    })
+                    .on('end', function(d) {
+                        // NOTE: this code is commented out because we are starting transition #2 after transition #1 is completed                        
+                        // after transition end, reset color and radius of circle
+                        // d3.select(this).transition().duration(500).attr('fill', 'black').attr('r', '2');
+                    })
+                    .attr("cx", function (d) { return xScale(d[0]); })
+                    .attr("cy", function (d) { return yScale(d[1]); })
+                    .transition() // starting transition #2
+                    .duration(500)
+                    .attr('fill', 'black')
+                    .attr('r', '2');
+                    
+
+                //updating axes
+                svg.select('.axis-x')
+                    .transition()
+                    .duration(1000)
+                    .call(xAxis);
+                
+                svg.select('.axis-y')
+                    .transition()
+                    .duration(1000)
+                    .call(yAxis);
+                
+
+            });
+
+    </script>
+
+</body>
+
+</html>

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>d3 - scatterplot with time scales</title>
+    <title>Bar chart</title>
     <script src="../libs/d3.js"></script>
     <style>
         svg {
@@ -20,7 +20,7 @@
     <svg></svg>
     <br /><br />
     <div>
-        <a href="#">Click on this text to update the chart with new data values.</a>
+        <a href="javascript:void(0)">Click on this text to update the chart with new data values.</a>
     </div>
     <script>
         //Width and height of svg element
@@ -88,20 +88,21 @@
                 yScale.domain([0, d3.max(dataset)]);
 
 
-                svg.selectAll("rect")
+               svg.selectAll("rect")
                     .data(dataset)
                     .transition()
                     .duration(300)
-                    .delay(function (d, i) { return i / dataset.length * 1000; })  // max delay will be 1 sec no matter how many elements we have
+                    .delay(function (d, i) { return i / dataset.length * 750; })  // max delay will be 1 sec no matter how many elements we have
                     .attr("y", function (d) { return height - yScale(d) })
                     .attr("height", function (d) { return yScale(d) })
                     .attr("fill", function (d) { return "rgb(0, 0, " + Math.round(d * 10) + ")"; });
+
 
                 svg.selectAll('text')
                     .data(dataset)
                     .transition()
                     .duration(300)
-                    .delay(function (d, i) { return i / dataset.length * 1000; })
+                    .delay(function (d, i) { return i / dataset.length * 750; })
                     .attr("y", function (d) {
                         var barHeight = yScale(d);
                         if (barHeight < 30)
@@ -109,13 +110,7 @@
                         else
                             return height - yScale(d) + 14;
                     })
-                    .attr('fill', function (d) {
-                        var barHeight = yScale(d);
-                        if (barHeight < 30)
-                            return 'black';
-                        else
-                            return 'white';
-                    })
+                    .attr('fill', function (d) { return yScale(d) < 30 ? 'black' : 'white'; })
                     .text(function (d) { return d; });
 
             });
