@@ -116,21 +116,21 @@
 						.data(dataset, key);		//Bind data with custom key function
 					
 					//Enter…
-					bars.enter()
-						.append("rect")
-						.attr("x", w)
-						.attr("y", function(d) {
-							return h - yScale(d.value);
-						})
-						.attr("width", xScale.bandwidth())
-						.attr("height", function(d) {
-							return yScale(d.value);
-						})
-						.attr("fill", function(d) {
-							return "rgb(0, 0, " + (d.value * 10) + ")";
-						})
-						.merge(bars)	//Update…
-						.transition()
+					// bars.enter()
+					// 	.append("rect")
+					// 	.attr("x", w)
+					// 	.attr("y", function(d) {
+					// 		return h - yScale(d.value);
+					// 	})
+					// 	.attr("width", xScale.bandwidth())
+					// 	.attr("height", function(d) {
+					// 		return yScale(d.value);
+					// 	})
+					// 	.attr("fill", function(d) {
+					// 		return "rgb(0, 0, " + (d.value * 10) + ")";
+					// 	})
+					// 	.merge(bars)	//Update…
+						bars.transition()
 						.duration(500)
 						.attr("x", function(d, i) {
 							return xScale(i);
