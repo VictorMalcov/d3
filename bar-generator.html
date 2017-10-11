@@ -23,6 +23,8 @@
         <a href="javascript:void(0)">Click on this text to update the chart with new data values.</a>
     </div>
     <script>
+
+
         //Width and height of svg element
         var width = 600;
         var height = 250;
@@ -56,20 +58,8 @@
             .text(function (d) { return d; })
             .attr("text-anchor", "middle")
             .attr("x", function (d, i) { return xScale(i) + xScale.bandwidth() / 2; })
-            .attr("y", function (d) {
-                var barHeight = yScale(d);
-                if (barHeight < 30)
-                    return height - barHeight - 4; // make text appear sligtly above bar if bar is small
-                else
-                    return height - yScale(d) + 14;
-            })
-            .attr('fill', function (d) {
-                var barHeight = yScale(d);
-                if (barHeight < 30)
-                    return 'black';
-                else
-                    return 'white';
-            })
+            .attr("y", function (d) { return yScale(d) < 30 ? (height - yScale(d) - 4) : (height - yScale(d) + 14); })
+            .attr('fill', function (d) { return yScale(d) < 30 ? 'black' : 'white'; })
             .attr("font-family", "sans-serif")
             .attr("font-size", "11px")
 
@@ -92,7 +82,7 @@
                     .data(dataset)
                     .transition()
                     .duration(300)
-                    .delay(function (d, i) { return i / dataset.length * 750; })  // max delay will be 1 sec no matter how many elements we have
+                    .delay(function (d, i) { return i / dataset.length * 600; })  // max delay will be 1 sec no matter how many elements we have
                     .attr("y", function (d) { return height - yScale(d) })
                     .attr("height", function (d) { return yScale(d) })
                     .attr("fill", function (d) { return "rgb(0, 0, " + Math.round(d * 10) + ")"; });
@@ -102,14 +92,8 @@
                     .data(dataset)
                     .transition()
                     .duration(300)
-                    .delay(function (d, i) { return i / dataset.length * 750; })
-                    .attr("y", function (d) {
-                        var barHeight = yScale(d);
-                        if (barHeight < 30)
-                            return height - barHeight - 4; // make text appear sligtly above bar if bar is small
-                        else
-                            return height - yScale(d) + 14;
-                    })
+                    .delay(function (d, i) { return i / dataset.length * 600; })
+                    .attr("y", function (d) { return yScale(d) < 30 ? (height - yScale(d) - 4) : (height - yScale(d) + 14); })
                     .attr('fill', function (d) { return yScale(d) < 30 ? 'black' : 'white'; })
                     .text(function (d) { return d; });
 

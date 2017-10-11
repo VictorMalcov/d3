@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Bar - add and remove single value</title>
+    <script src="./libs/d3.js"></script>
+    <style>
+        svg {
+            border: 0px solid #dddddd;
+        }
+
+        .bar {
+            fill: #6750B9
+        }
+
+        button {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+
+            /* background-color: #d7e1e9;
+            display: inline-block;
+            padding: 3px 6px;
+            text-decoration: none;
+            margin-right: 12px; */
+        }
+    </style>
+</head>
+
+<body>
+    <svg></svg>
+    <br />
+    <br />
+    <p>
+        <button class='add'>Add data value</button>
+        <button class='remove'>Remove data value</button>
+    </p>
+    <script>
+        //Width and height of svg element
+        var width = 600;
+        var height = 250;
+
+        var dataset = [1, 10, 13, 19, 21, 25, 22, 18, 15, 13, 11, 12, 15, 20, 18, 17, 16, 18, 23, 25];
+        var svg = d3.select('svg').attr("width", width).attr("height", height);
+
+        var xScale = d3.scaleBand()
+            .domain(d3.range(dataset.length))
+            .rangeRound([0, width]) // enable rounding
+            .paddingInner(0.05); // 5% padding added
+
+        var yScale = d3.scaleLinear()
+            .domain([0, d3.max(dataset)])
+            .range([0, height]);
+
+        svg.selectAll("rect")
+            .data(dataset)
+            .enter()
+            .append("rect")
+            .attr("x", function (d, i) { return xScale(i); })
+            .attr("y", function (d) { return height - yScale(d) })
+            .attr("width", xScale.bandwidth())
+            .attr("height", function (d) { return yScale(d); })
+            .attr("fill", function (d) { return "rgb(0, 0, " + Math.round(d * 10) + ")"; });
+
+        svg.selectAll("text")
+            .data(dataset)
+            .enter()
+            .append("text")
+            .text(function (d) { return d; })
+            .attr("text-anchor", "middle")
+            .attr("x", function (d, i) { return xScale(i) + xScale.bandwidth() / 2; })
+            .attr("y", function (d) { return yScale(d) < 30 ? (height - yScale(d) - 4) : (height - yScale(d) + 14); })
+            .attr('fill', function (d) { return yScale(d) < 30 ? 'black' : 'white'; })
+            .attr("font-family", "sans-serif")
+            .attr("font-size", "11px")
+
+
+        // after user clicks link, we add new data value to dataset
+        d3.select("button.add").on("click", function () {
+            // NOTE: adding only one value to the dataset
+            var maxValue = 25;
+            var newNumber = Math.floor(Math.random() * maxValue);
+            dataset.push(newNumber);
+
+            // updating x-scale after we generated new dataset
+            xScale.domain(d3.range(dataset.length));
+            // updating y-scale after we generated new dataset
+            yScale.domain([0, d3.max(dataset)]);
+
+
+            // IMPORTANT: data() returns 'update' selection of all elements to which data was just bound. This 'update' selection contains 'enter()' method.
+            var bars = svg.selectAll('rect').data(dataset);
+            bars.enter() // IMPORTANT: enter() returns 'enter' selection, 
+                .append('rect') // adding just single rect object (since we added just one data value to dataset)
+                .attr("x", width) // sets the initial x position of the rect beyond the far right edge of the SVG
+                .attr("y", function (d) { return height - yScale(d) })
+                .attr("width", xScale.bandwidth())
+                .attr("height", function (d) { return yScale(d); })
+                .attr("fill", function (d) { return "rgb(0, 0, " + Math.round(d * 10) + ")"; }) // end adding new rect object
+                .merge(bars) // use merge() to combine 'enter' selection with the 'update' selection
+                .transition()
+                .duration(300)
+                .attr("x", function (d, i) { return xScale(i); })
+                .attr("y", function (d) { return height - yScale(d) })
+                .attr("width", xScale.bandwidth())
+                .attr("height", function (d) { return yScale(d) })
+                .attr("fill", function (d) { return "rgb(0, 0, " + Math.round(d * 10) + ")"; });
+
+
+            var labels = svg.selectAll('text').data(dataset);
+            labels.enter()
+                .append("text")
+                .text(function (d) { return d; })
+                .attr("text-anchor", "middle")
+                .attr("x", width + 10)
+                .attr("y", function (d) { return yScale(d) < 30 ? (height - yScale(d) - 4) : (height - yScale(d) + 14); })
+                .attr('fill', function (d) { return yScale(d) < 30 ? 'black' : 'white'; })
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "11px")
+                .merge(labels)
+                .transition()
+                .duration(300)
+                .attr("x", function (d, i) { return xScale(i) + xScale.bandwidth() / 2; })
+                .attr("y", function (d) { return yScale(d) < 30 ? (height - yScale(d) - 4) : (height - yScale(d) + 14); })
+                .attr('fill', function (d) { return yScale(d) < 30 ? 'black' : 'white'; })
+                .text(function (d) { return d; });
+
+        });
+
+
+        d3.select("button.remove").on("click", function () {
+            dataset.shift(); // removing one data value from dataset
+
+            // updating x-scale after we generated new dataset
+            xScale.domain(d3.range(dataset.length));
+            // updating y-scale after we generated new dataset
+            yScale.domain([0, d3.max(dataset)]);
+
+            var bars = svg.selectAll('rect').data(dataset);
+            bars.transition()
+                .duration(600)
+                .attr("x", function (d, i) { return xScale(i); })
+                .attr("y", function (d) { return height - yScale(d) })
+                .attr("width", xScale.bandwidth())
+                .attr("height", function (d) { return yScale(d) })
+                .attr("fill", function (d) { return "rgb(0, 0, " + Math.round(d * 10) + ")"; });
+
+            bars.exit()
+                .transition()
+                .duration(200)
+                .attr('x', width)
+                .remove();
+
+
+
+            var labels = svg.selectAll('text').data(dataset);
+            labels.transition()
+                .duration(600)
+                .attr("x", function (d, i) { return xScale(i) + xScale.bandwidth() / 2; })
+                .attr("y", function (d) { return yScale(d) < 30 ? (height - yScale(d) - 4) : (height - yScale(d) + 14); })
+                .attr('fill', function (d) { return yScale(d) < 30 ? 'black' : 'white'; })
+                .text(function (d) { return d; });
+
+            labels.exit()
+                .transition()
+                .duration(200)
+                .attr('x', width)
+                .remove();
+
+
+        });
+
+
+
+        /*
+        .ease(d3.easeCubicInOut) // default transition
+        .ease(d3.easeLinear)
+        .ease(d3.easeCircleIn)
+        .ease(d3.easeElasticOut)
+        .ease(d3.easeBounceOut)
+        */
+    </script>
+
+</body>
+
+</html>
